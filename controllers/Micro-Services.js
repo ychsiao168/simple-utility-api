@@ -35,3 +35,12 @@ export const handleWhoAmI = (req, res) => {
     software: req.headers["user-agent"],
   })
 }
+
+export const postFileAnalyse = (req, res) => {
+  const { originalname, mimetype, size } = req.file
+  res.json({
+    name: originalname,
+    type: mimetype,
+    size: size
+  })
+}
