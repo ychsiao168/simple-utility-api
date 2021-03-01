@@ -24,6 +24,7 @@ app.use(express.static("public"))
 app.use("/", simpleAppRoutes)
 app.use("/", linebotRoutes)
 app.use("/api", microservicesRoutes)
+app.set('trust proxy', true);
 
 app.get("/", (req, res) => res.send("simple-utility-api is running"))
 

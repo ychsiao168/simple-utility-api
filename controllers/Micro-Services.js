@@ -14,14 +14,11 @@ export const handleTimestamp = (req, res) => {
   const { queryString } = req.params
   const dateFormat = "ddd, DD MMM yyyy HH:mm:ss"
 
-  if (typeof queryString === "undefined") {
-    // return now when no query string
-    return res.json({ unix: moment.utc().valueOf(), utc: moment.utc().format(dateFormat) + " GMT" })
-  }
-
-  const date = queryString.length === 13 ?
-    moment.unix(queryString / 1000).utc() :
-    moment.utc(queryString)
+  const date = typeof queryString === "undefined" ?
+    moment.utc() :
+    queryString.length === 13 ?
+      moment.unix(queryString / 1000).utc() :
+      moment.utc(queryString, "YYYY-MM-DD", true)
 
   if (!date.isValid()) {
     res.json({ error: "Invalid Date" })
@@ -29,4 +26,12 @@ export const handleTimestamp = (req, res) => {
     res.json({ unix: date.valueOf(), utc: date.format(dateFormat) + " GMT" })
   }
 
+}
+
+export const handleWhoAmI = (req, res) => {
+  res.json({
+    ipaddress: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
+    language: req.headers["accept-language"],
+    software: req.headers["user-agent"],
+  })
 }
