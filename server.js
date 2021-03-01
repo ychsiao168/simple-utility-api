@@ -7,6 +7,7 @@ import cors from "cors"
 
 import simpleAppRoutes from "./routes/simple-app.js"
 import linebotRoutes from "./routes/linebot.js"
+import microservicesRoutes from "./routes/micro-services.js"
 
 //------------------------------------------------------------------------------
 //  Global Variables
@@ -22,6 +23,7 @@ app.use(cors())
 app.use(express.static("public"))
 app.use("/", simpleAppRoutes)
 app.use("/", linebotRoutes)
+app.use("/api", microservicesRoutes)
 
 app.get("/", (req, res) => res.send("simple-utility-api is running"))
 
