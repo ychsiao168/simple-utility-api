@@ -2,10 +2,15 @@
 //  Modules
 //------------------------------------------------------------------------------
 import line from "@line/bot-sdk"
+import querystring from "querystring"
 import { createCarouselMessage, createWeatherMessage, createAQIMessage, MainMenuMessage } from "./linebot-messages.js"
 import { CWBWeather } from "./Weather.js"
 import { AQIData } from "./EpaData.js"
-
+import {
+  MENU_MAIN, MENU_WX_ZONES, MENU_WX_NORTHZONE, MENU_WX_MIDDLEZONE, MENU_WX_SOUTHZONE, MENU_WX_EASTZONE,
+  MENU_WX_ISLANDZONE, MENU_AQ_ZONES, MENU_AQ_NORTHZONE, MENU_AQ_MIDDLEZONE, MENU_AQ_SOUTHZONE, MENU_AQ_EASTZONE,
+  MENU_AQ_ISLANDZONE,
+} from "./linebot-richmenu.js"
 //------------------------------------------------------------------------------
 //  Global Variables
 //------------------------------------------------------------------------------
@@ -45,33 +50,34 @@ export const handleLineBot = (req, res) => {
 function handleEvent(event) {
 
   let returnMsg = {}
+  const { userId } = event.source
 
-  if (event.type !== "message" || event.message.type !== "text") {
-    // 目前僅過濾文字
+  if (!((event.type === "message" && event.message.type === "text") || (event.type === "postback"))) {
+    // 目前僅過濾文字+POSTBACK
     return Promise.resolve(null);
   }
 
   switch (true) {
-    case /測試1/.test(event.message.text):
+    case /測試1/.test(event?.message?.text):
       returnMsg.type = "text"
       returnMsg.text = "5566"
       console.log("測試1")
       break
 
-    case /測試2/.test(event.message.text):
+    case /測試2/.test(event?.message?.text):
       returnMsg.type = "sticker"
       returnMsg.packageId = "11537"
       returnMsg.stickerId = "52002734"
       console.log("測試2")
       break
 
-    case /測試3/.test(event.message.text):
+    case /測試3/.test(event?.message?.text):
       const record = gWeather.get("新北市", 0)
       returnMsg = createWeatherMessage(record)
       break
 
-    case /天氣\s*(\d+)/.test(event.message.text): {
-      console.log("天氣", RegExp.$1)
+    case /天氣\s*(\d+)/.test(event?.message?.text): {
+      //console.log("天氣", RegExp.$1)
       const locationIndex = RegExp.$1
       const records = gWeather.getRecords(locationIndex)
       if (records === null) {
@@ -86,13 +92,12 @@ function handleEvent(event) {
           createCarouselMessage(records, records[0].locationName + "天氣預報", createWeatherMessage),
         )
       }
-
       break
     }
 
 
-    case /空氣\s*(\d+)\s*(\d*)/.test(event.message.text): {
-      console.log("空氣", RegExp.$1, RegExp.$2)
+    case /空氣\s*(\d+)\s*(\d*)/.test(event?.message?.text): {
+      //console.log("空氣", RegExp.$1, RegExp.$2)
       const locationIndex = RegExp.$1
       const records = gAQIData.getRecords(locationIndex)
 
@@ -118,12 +123,34 @@ function handleEvent(event) {
             )
           }
         }
-
       }
 
       break
     }
 
+    case /postback/.test(event.type): {
+      const data = querystring.parse(event.postback.data);
+      switch (data.menu) {
+        case "Home": client.linkRichMenuToUser(userId, MENU_MAIN); break
+        case "WX_ZONES": client.linkRichMenuToUser(userId, MENU_WX_ZONES); break
+        case "AQ_ZONES": client.linkRichMenuToUser(userId, MENU_AQ_ZONES); break
+
+        case "WX_NorthZone": client.linkRichMenuToUser(userId, MENU_WX_NORTHZONE); break
+        case "WX_MiddleZone": client.linkRichMenuToUser(userId, MENU_WX_MIDDLEZONE); break
+        case "WX_SouthZone": client.linkRichMenuToUser(userId, MENU_WX_SOUTHZONE); break
+        case "WX_EastZone": client.linkRichMenuToUser(userId, MENU_WX_EASTZONE); break
+        case "WX_IslandZone": client.linkRichMenuToUser(userId, MENU_WX_ISLANDZONE); break
+
+        case "AQ_NorthZone": client.linkRichMenuToUser(userId, MENU_AQ_NORTHZONE); break
+        case "AQ_MiddleZone": client.linkRichMenuToUser(userId, MENU_AQ_MIDDLEZONE); break
+        case "AQ_SouthZone": client.linkRichMenuToUser(userId, MENU_AQ_SOUTHZONE); break
+        case "AQ_EastZone": client.linkRichMenuToUser(userId, MENU_AQ_EASTZONE); break
+        case "AQ_IslandZone": client.linkRichMenuToUser(userId, MENU_AQ_ISLANDZONE); break
+
+        default: client.linkRichMenuToUser(userId, MENU_MAIN); break
+      }
+      return Promise.resolve(null);
+    }
 
     default:
       // returnMsg = MainMenuMessage
