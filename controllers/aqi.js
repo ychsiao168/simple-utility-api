@@ -1,19 +1,19 @@
 //------------------------------------------------------------------------------
-//  Modules
+//  Modules
 //------------------------------------------------------------------------------
-import express from "express"
-import { handleWeatherFC } from "../controllers/weather.js"
-import { handleAqiData } from "../controllers/aqi.js"
-//------------------------------------------------------------------------------
-//  Global Variables
-//------------------------------------------------------------------------------
-const router = express.Router()
+import { AQIData } from "../classes/aqi.js"
 
 //------------------------------------------------------------------------------
-//  Code Start
+//  Global Variables
 //------------------------------------------------------------------------------
-router.get("/weatherfc/:locationName?", handleWeatherFC)
-router.get("/epadata/:api_name?", (req, res) => (res.redirect("/aqi")))
-router.get("/aqi", handleAqiData)
+const gAQIData = new AQIData()
 
-export default router
+//------------------------------------------------------------------------------
+//  Code Start
+//------------------------------------------------------------------------------
+export const handleAqiData = (req, res) => {
+  const data = gAQIData.data
+  res.send(data)
+}
+
+

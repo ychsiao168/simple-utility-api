@@ -4,8 +4,8 @@
 import line from "@line/bot-sdk"
 import querystring from "querystring"
 import { createCarouselMessage, createWeatherMessage, createAQIMessage, MainMenuMessage } from "./linebot-messages.js"
-import { CWBWeather } from "./Weather.js"
-import { AQIData } from "./EpaData.js"
+import { CWBWeather } from "../classes/weather.js"
+import { AQIData } from "../classes/aqi.js"
 import {
   MENU_MAIN, MENU_WX_ZONES, MENU_WX_NORTHZONE, MENU_WX_MIDDLEZONE, MENU_WX_SOUTHZONE, MENU_WX_EASTZONE,
   MENU_WX_ISLANDZONE, MENU_AQ_ZONES, MENU_AQ_NORTHZONE, MENU_AQ_MIDDLEZONE, MENU_AQ_SOUTHZONE, MENU_AQ_EASTZONE,

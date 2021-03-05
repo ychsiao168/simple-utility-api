@@ -1,10 +1,10 @@
 //------------------------------------------------------------------------------
-//  Modules
+//  Modules
 //------------------------------------------------------------------------------
 import fetch from "node-fetch"
 
 //------------------------------------------------------------------------------
-//  Global Variables
+//  Global Variables
 //------------------------------------------------------------------------------
 const API_KEY = process.env.EPA_API_KEY
 const API_PREFIX = "https://data.epa.gov.tw/api/v1"
@@ -33,33 +33,21 @@ const siteArr = {
   "金門縣": ["金門"],
   "連江縣": ["馬祖"],
 }
+
 //------------------------------------------------------------------------------
-//  Code Start
+//  Code Start
 //------------------------------------------------------------------------------
-export const handleEpaData = (req, res) => {
-
-  const { api_name } = req.params
-
-  const api_url = encodeURI(`${API_PREFIX}/${api_name}?api_key=${API_KEY}`)
-
-  fetch(api_url)
-    .then(rawData => rawData.json())
-    .then(data => {
-      res.send(data)
-    })
-    .catch(err => {
-      console.log(err.message)
-      err.message = err.message.replace(API_KEY, "XXXX")
-      res.status(400).send(err)
-    })
-}
 
 export class AQIData {
 
   constructor() {
-    this.records = null
+    if (AQIData._singleton) {
+      return AQIData._singleton
+    }
+    this.data = null
     this.timerID = null
     this.init()
+    AQIData._singleton = this
   }
 
 
@@ -69,7 +57,7 @@ export class AQIData {
     fetch(api_url)
       .then(rawData => rawData.json())
       .then(data => {
-        this.records = data.records
+        this.data = data
         console.log("Fetch AQI Data Done", new Date())
       })
       .catch(err => {
@@ -91,8 +79,8 @@ export class AQIData {
       return null
     }
 
-    if (this.records !== null) {
-      this.records.forEach(r => {
+    if (this.data.records !== null) {
+      this.data.records.forEach(r => {
         if (r.County === countyName) {
           retObj.push(r)
         }
@@ -101,4 +89,3 @@ export class AQIData {
     return retObj
   }
 }
-
