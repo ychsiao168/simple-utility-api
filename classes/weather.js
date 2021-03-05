@@ -96,7 +96,7 @@ export class CWBWeather {
     return retObj
   }
 
-  getRecords(locIdx) {
+  getRecords = async (locIdx) => {
 
     if (locIdx < 0 || locIdx >= locationArr.length) {
       console.log("Wrong location index")
@@ -107,7 +107,7 @@ export class CWBWeather {
     const locName = locationArr[locIdx]
 
     for (let i = 0; i < 3; i++) {
-      retObj.push(this.get(locName, i))
+      retObj.push(await this.get(locName, i))
     }
 
     return retObj

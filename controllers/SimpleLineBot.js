@@ -47,7 +47,7 @@ export const handleLineBot = (req, res) => {
 }
 
 
-function handleEvent(event) {
+const handleEvent = async (event) => {
 
   let returnMsg = {}
   const { userId } = event.source
@@ -72,14 +72,14 @@ function handleEvent(event) {
       break
 
     case /測試3/.test(event?.message?.text):
-      const record = gWeather.get("新北市", 0)
+      const record = await gWeather.get("新北市", 0)
       returnMsg = createWeatherMessage(record)
       break
 
     case /天氣\s*(\d+)/.test(event?.message?.text): {
       //console.log("天氣", RegExp.$1)
       const locationIndex = RegExp.$1
-      const records = gWeather.getRecords(locationIndex)
+      const records = await gWeather.getRecords(locationIndex)
       if (records === null) {
         returnMsg.type = "text"
         returnMsg.text = "地區編號錯誤"
@@ -99,7 +99,7 @@ function handleEvent(event) {
     case /空氣\s*(\d+)\s*(\d*)/.test(event?.message?.text): {
       //console.log("空氣", RegExp.$1, RegExp.$2)
       const locationIndex = RegExp.$1
-      const records = gAQIData.getRecords(locationIndex)
+      const records = await gAQIData.getRecords(locationIndex)
 
       if (records === null) {
         returnMsg.type = "text"
