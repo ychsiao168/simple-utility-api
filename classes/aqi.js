@@ -2,7 +2,7 @@
 //  Modules
 //------------------------------------------------------------------------------
 import fetch from "node-fetch"
-
+import NodeCache from "node-cache"
 //------------------------------------------------------------------------------
 //  Global Variables
 //------------------------------------------------------------------------------
@@ -44,34 +44,39 @@ export class AQIData {
     if (AQIData._singleton) {
       return AQIData._singleton
     }
-    this.data = null
-    this.timerID = null
-    this.init()
+    this.dataCache = new NodeCache({ stdTTL: 30 * 60 })
     AQIData._singleton = this
   }
 
-
-  init() {
+  fetchAqiData = async () => {
     const api_url = encodeURI(`${API_PREFIX}/aqx_p_432?api_key=${API_KEY}`)
+    let aqidata = null
+    try {
+      const response = await fetch(api_url)
+      aqidata = response.json()
+      console.log("Fetch AQI Data Done", new Date())
+    } catch (err) {
+      console.log("Fetch AQI Data Failed", err);
+    }
 
-    fetch(api_url)
-      .then(rawData => rawData.json())
-      .then(data => {
-        this.data = data
-        console.log("Fetch AQI Data Done", new Date())
-      })
-      .catch(err => {
-        console.log(err.message)
-        err.message = err.message.replace(API_KEY, "XXXX")
-        res.status(400).send(err)
-      })
-
-    this.timerID = setTimeout(() => { this.init() }, 60 * 60 * 1000) // update every hour
+    return aqidata
   }
 
-  getRecords(countyIdx) {
+  getAqiCachedData = async () => {
+    let aqidata = this.dataCache.get("aqidata")
+    if (aqidata === undefined) {
+      // cache miss
+      aqidata = await this.fetchAqiData()
+      this.dataCache.set("aqidata", aqidata)
+    }
+    return aqidata
+  }
+
+
+  getRecords = async (countyIdx) => {
     const countyArr = Object.keys(siteArr)
     const countyName = countyArr[countyIdx]
+    const aqidata = await this.getAqiCachedData()
     let retObj = []
 
     if (countyIdx < 0 || countyIdx >= countyArr.length) {
@@ -79,8 +84,8 @@ export class AQIData {
       return null
     }
 
-    if (this.data.records !== null) {
-      this.data.records.forEach(r => {
+    if (aqidata.records !== null) {
+      aqidata.records.forEach(r => {
         if (r.County === countyName) {
           retObj.push(r)
         }

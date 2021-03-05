@@ -11,8 +11,8 @@ const gAQIData = new AQIData()
 //------------------------------------------------------------------------------
 //  Code Start
 //------------------------------------------------------------------------------
-export const handleAqiData = (req, res) => {
-  const data = gAQIData.data
+export const handleAqiData = async (req, res) => {
+  const data = await gAQIData.getAqiCachedData()
   res.send(data)
 }
 

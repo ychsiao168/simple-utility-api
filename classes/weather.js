@@ -2,7 +2,7 @@
 //  Modules
 //------------------------------------------------------------------------------
 import fetch from "node-fetch"
-
+import NodeCache from "node-cache"
 //------------------------------------------------------------------------------
 //  Global Variables
 //------------------------------------------------------------------------------
@@ -27,25 +27,32 @@ export class CWBWeather {
       return CWBWeather._singleton
     }
 
-    this.data = null
-    this.timerID = null
-    this.init()
-
+    this.dataCache = new NodeCache({ stdTTL: 30 * 60 });
     CWBWeather._singleton = this
   }
 
-
-  init() {
+  fetchWxData = async () => {
     const api_url = encodeURI(`${API_PREFIX}/F-C0032-001?Authorization=${API_KEY}`)
-    fetch(api_url)
-      .then(rawData => rawData.json())
-      .then((data) => {
-        this.data = data
-        console.log("Fetch CWB Data Done", new Date())
-      })
-      .catch(console.log)
+    let wxdata = null
+    try {
+      const response = await fetch(api_url);
+      wxdata = response.json()
+      console.log("Fetch CWB Data Done", new Date())
+    }
+    catch (err) {
+      console.log("Fetch CWB Data Failed", err);
+    }
+    return wxdata
+  }
 
-    this.timerID = setTimeout(() => { this.init() }, 60 * 60 * 1000) // update every hour
+  getWxCachedData = async () => {
+    let wxdata = this.dataCache.get("wxdata");
+    if (wxdata === undefined) {
+      // cache miss
+      wxdata = await this.fetchWxData()
+      this.dataCache.set("wxdata", wxdata)
+    }
+    return wxdata
   }
 
   _getTimeString = (start, end) => {
@@ -71,12 +78,13 @@ export class CWBWeather {
     }
   }
 
-  _findLocationRecord = (locName) => {
+  findLocationRecord = async (locName) => {
     let retObj = null
+    const wxdata = await this.getWxCachedData()
     if (locName === "") {
-      retObj = this.data
+      retObj = wxdata
     } else {
-      this.data.records.location.some(loc => {
+      wxdata.records.location.some(loc => {
         if (loc.locationName === locName) {
           retObj = Object.assign({}, loc)
           return true // it's break
@@ -105,9 +113,9 @@ export class CWBWeather {
     return retObj
   }
 
-  get(locName, index = 0) {
+  get = async (locName, index = 0) => {
 
-    const locationRecord = this._findLocationRecord(locName)
+    const locationRecord = await this.findLocationRecord(locName)
     if (locationRecord) {
       const { weatherElement } = locationRecord
 

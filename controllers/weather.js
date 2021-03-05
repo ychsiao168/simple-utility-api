@@ -11,7 +11,7 @@ const gWeather = new CWBWeather()
 //------------------------------------------------------------------------------
 //  Code Start
 //------------------------------------------------------------------------------
-export const handleWeatherFC = (req, res) => {
+export const handleWeatherFC = async (req, res) => {
 
   let { locationName } = req.params
 
@@ -19,7 +19,7 @@ export const handleWeatherFC = (req, res) => {
     locationName = ""
   }
 
-  const data = gWeather._findLocationRecord(locationName)
+  const data = await gWeather.findLocationRecord(locationName)
   res.send(data)
 }
 
