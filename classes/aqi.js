@@ -7,7 +7,7 @@ import NodeCache from "node-cache"
 //  Global Variables
 //------------------------------------------------------------------------------
 const API_KEY = process.env.EPA_API_KEY
-const API_PREFIX = "https://data.epa.gov.tw/api/v1"
+const API_PREFIX = "https://data.epa.gov.tw/api/v2"
 
 const siteArr = {
   "基隆市": ["基隆"],
