@@ -86,7 +86,7 @@ export class AQIData {
 
     if (aqidata.records !== null) {
       aqidata.records.forEach(r => {
-        if (r.County === countyName) {
+        if (r.county === countyName) {
           retObj.push(r)
         }
       })

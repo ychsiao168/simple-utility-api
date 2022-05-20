@@ -1160,26 +1160,26 @@ export const createAQIMessage = (record) => {
 
   let retMsg = JSON.parse(JSON.stringify(FlexAQIMessage)) // deep clone
 
-  retMsg.altText = `${record["County"]}/${record["SiteName"]} 空氣品質`
-  retMsg.contents.body.contents[0].text = `${record["PublishTime"]}`
-  retMsg.contents.body.contents[1].text = `${record["County"]}/${record["SiteName"]}`
+  retMsg.altText = `${record["county"]}/${record["sitename"]} 空氣品質`
+  retMsg.contents.body.contents[0].text = `${record["publishtime"]}`
+  retMsg.contents.body.contents[1].text = `${record["county"]}/${record["sitename"]}`
   retMsg.contents.body.contents[2].text = "一般站"  // TODO: 建立資料庫
-  retMsg.contents.body.contents[5].contents[0].text = `${record["AQI"]}`
-  retMsg.contents.body.contents[5].borderColor = _getAQIColor(Number(record["AQI"]))///
+  retMsg.contents.body.contents[5].contents[0].text = `${record["aqi"]}`
+  retMsg.contents.body.contents[5].borderColor = _getAQIColor(Number(record["aqi"]))///
   retMsg.contents.body.contents[6].text = `${record.Status}`;
-  retMsg.contents.body.contents[8].contents[1].contents[0].contents[1].text = `${record["PM2.5_AVG"]}`
-  retMsg.contents.body.contents[8].contents[1].contents[2].contents[1].text = `${record["PM2.5"]}`
-  retMsg.contents.body.contents[10].contents[1].contents[0].contents[1].text = `${record["PM10_AVG"]}`
-  retMsg.contents.body.contents[10].contents[1].contents[2].contents[1].text = `${record["PM10"]}`
+  retMsg.contents.body.contents[8].contents[1].contents[0].contents[1].text = `${record["pm2.5_avg"]}`
+  retMsg.contents.body.contents[8].contents[1].contents[2].contents[1].text = `${record["pm2.5"]}`
+  retMsg.contents.body.contents[10].contents[1].contents[0].contents[1].text = `${record["pm10_avg"]}`
+  retMsg.contents.body.contents[10].contents[1].contents[2].contents[1].text = `${record["pm10"]}`
 
-  retMsg.contents.body.contents[12].contents[1].contents[0].contents[1].text = `${record["O3_8hr"]}`
-  retMsg.contents.body.contents[12].contents[1].contents[2].contents[1].text = `${record["O3"]}`
+  retMsg.contents.body.contents[12].contents[1].contents[0].contents[1].text = `${record["o3_8hr"]}`
+  retMsg.contents.body.contents[12].contents[1].contents[2].contents[1].text = `${record["o3"]}`
 
-  retMsg.contents.body.contents[14].contents[1].contents[0].contents[1].text = `${record["CO_8hr"]}`
-  retMsg.contents.body.contents[14].contents[1].contents[2].contents[1].text = `${record["CO"]}`
+  retMsg.contents.body.contents[14].contents[1].contents[0].contents[1].text = `${record["co_8hr"]}`
+  retMsg.contents.body.contents[14].contents[1].contents[2].contents[1].text = `${record["co"]}`
 
-  retMsg.contents.body.contents[16].contents[1].contents[1].text = `${record["SO2"]}`
-  retMsg.contents.body.contents[18].contents[1].contents[1].text = `${record["NO2"]}`
+  retMsg.contents.body.contents[16].contents[1].contents[1].text = `${record["so2"]}`
+  retMsg.contents.body.contents[18].contents[1].contents[1].text = `${record["no2"]}`
 
   _fillEmptyItems(retMsg)
 

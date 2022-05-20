@@ -121,12 +121,12 @@ const _processAQ = async (locIdx) => {
       retObj = createAQIMessage(records[0])
     } else {
       retObj = new Array(
-        createCarouselMessage(records.slice(0, 10), `${records[0]["County"]} 空氣品質`, createAQIMessage)
+        createCarouselMessage(records.slice(0, 10), `${records[0]["county"]} 空氣品質`, createAQIMessage)
       )
 
       if (records.length >= 10) {
         retObj.push(
-          createCarouselMessage(records.slice(10,), `${records[0]["County"]} 空氣品質`, createAQIMessage)
+          createCarouselMessage(records.slice(10,), `${records[0]["county"]} 空氣品質`, createAQIMessage)
         )
       }
     }
