@@ -7,7 +7,7 @@ import NodeCache from "node-cache"
 //  Global Variables
 //------------------------------------------------------------------------------
 const API_KEY = process.env.CWB_API_KEY
-const API_PREFIX = "https://opendata.cwb.gov.tw/api/v1/rest/datastore"
+const API_PREFIX = "https://opendata.cwa.gov.tw/api/v1/rest/datastore"
 
 const locationArr = [
   "基隆市", "臺北市", "新北市", "桃園市",

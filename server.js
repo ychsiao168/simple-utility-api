@@ -30,19 +30,27 @@ app.set('trust proxy', true);
 
 app.get("/", (req, res) => res.send("simple-utility-api is running"))
 
-mongoose.connect(process.env.MONGODB_URL, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useCreateIndex: true,
-  useFindAndModify: false
-})
-  .then(() => {
-    app.listen(serverPort, () => {
-      console.log(`server is running on port ${serverPort}`)
-    });
-  })
-  .catch(err => (console.log))
+if (process.env.MONGODB_ENABLE == 1) {
+  mongoose.connect(process.env.MONGODB_URL, {
+    // useNewUrlParser: true,
+    // useNewUrlParser: true,
+    // useUnifiedTopology: true,
+    // useCreateIndex: true,
+    // useFindAndModify: false
+    })
+    .then(() => {
+      app.listen(serverPort, () => {
+        console.log(`server is running on port ${serverPort} w/ mongoDB`)
+      });
+    })
+    .catch(err => (console.log))
 
-mongoose.connection.on('error', err => {
-  console.log(err);
-});
+  mongoose.connection.on('error', err => {
+    console.log(err);
+  });
+} else {
+  app.listen(serverPort, () => {
+    console.log(`server is running on port ${serverPort} w/o mongoDB`)
+  });
+}
+

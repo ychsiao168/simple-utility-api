@@ -53,7 +53,7 @@ const _limitDocuments = async (maxDocs) => {
   if (count > maxDocs) {
     // delete oldest
     const oldestUrl = await Url.find({}).sort([["_id", +1]]).limit(1).exec()
-    await Url.findOneAndRemove({ "_id": oldestUrl[0]._id }).exec()
+    await Url.findOneAndDelete({ "_id": oldestUrl[0]._id }).exec()
   }
 }
 
@@ -94,30 +94,25 @@ export const getShortUrl = (req, res) => {
 
   if (typeof short_url === "undefined") {
     // return all
-    Url.find({}, (err, Urls) => {
-      if (err) {
-        console.log(err)
-        res.status(500).json({ message: "Internal error" })
-      } else {
-        const retArr = Urls.map((url) => ({ original_url: url.url, hash: url.hash }))
-        res.json(retArr)
-      }
+    Url.find({}).then((Urls)=>{
+      const retArr = Urls.map((url) => ({ original_url: url.url, hash: url.hash }))
+      res.json(retArr)
+    }).catch((err)=>{
+      console.log(err)
+      res.status(500).json({ message: "Internal error" })
     })
   } else {
     // return exact one
-    Url.findOne({ hash: short_url }, (err, found) => {
-      if (err) {
-        console.log(err)
-        res.status(500).json({ message: "Internal error" })
+    Url.findOne({ hash: short_url }).then((found)=>{
+      if (found) {
+        // res.json({ original_url: found.url })
+        res.redirect(found.url)
+      } else {
+        res.status(404).json({ message: "not found" })
       }
-      else {
-        if (found) {
-          // res.json({ original_url: found.url })
-          res.redirect(found.url)
-        } else {
-          res.status(404).json({ message: "not found" })
-        }
-      }
+    }).catch((err)=>{
+      console.log(err)
+      res.status(500).json({ message: "Internal error" })
     })
   }
 }
