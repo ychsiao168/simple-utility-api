@@ -1166,7 +1166,7 @@ export const createAQIMessage = (record) => {
   retMsg.contents.body.contents[2].text = "一般站"  // TODO: 建立資料庫
   retMsg.contents.body.contents[5].contents[0].text = `${record["aqi"]}`
   retMsg.contents.body.contents[5].borderColor = _getAQIColor(Number(record["aqi"]))///
-  retMsg.contents.body.contents[6].text = `${record.Status}`;
+  retMsg.contents.body.contents[6].text = `${record.status}`;
   retMsg.contents.body.contents[8].contents[1].contents[0].contents[1].text = `${record["pm2.5_avg"]}`
   retMsg.contents.body.contents[8].contents[1].contents[2].contents[1].text = `${record["pm2.5"]}`
   retMsg.contents.body.contents[10].contents[1].contents[0].contents[1].text = `${record["pm10_avg"]}`
