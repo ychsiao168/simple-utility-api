@@ -39,15 +39,6 @@ export const handleWhoAmI = (req, res) => {
   })
 }
 
-export const postFileAnalyse = (req, res) => {
-  const { originalname, mimetype, size } = req.file
-  res.json({
-    name: originalname,
-    type: mimetype,
-    size: size
-  })
-}
-
 const _limitDocuments = async (maxDocs) => {
   const count = await Url.countDocuments({}).exec()
   if (count > maxDocs) {

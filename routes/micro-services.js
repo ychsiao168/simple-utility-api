@@ -1,22 +1,19 @@
 //------------------------------------------------------------------------------
-//  Modules
+//  Modules
 //------------------------------------------------------------------------------
 import express from "express"
-import { handleTimestamp, handleWhoAmI, postFileAnalyse, postShortUrl, getShortUrl } from "../controllers/Micro-Services.js"
-import multer from "multer"
-//------------------------------------------------------------------------------
-//  Global Variables
-//------------------------------------------------------------------------------
-const router = express.Router()
-const upload = multer({ limit: { fileSize: 2000000 /* 2MB */ } })
+import { handleTimestamp, handleWhoAmI, postShortUrl, getShortUrl } from "../controllers/Micro-Services.js"
 
 //------------------------------------------------------------------------------
-//  Code Start
+//  Global Variables
+//------------------------------------------------------------------------------
+const router = express.Router()
+
+//------------------------------------------------------------------------------
+//  Code Start
 //------------------------------------------------------------------------------
 router.get("/timestamp/:queryString?", handleTimestamp)
 router.get("/whoami", handleWhoAmI)
-router.post("/fileanalyse", upload.single("upfile"), postFileAnalyse)
-router.post("/fileanalyse.html/api/fileanalyse", (req, res) => (res.redirect(307, "/api/fileanalyse"))) // only for passing freecamp.org testing
 router.post("/shorturl/new", postShortUrl)
 router.get("/shorturl/:short_url?", getShortUrl)
 export default router
