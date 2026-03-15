@@ -35,7 +35,7 @@ const FlexWeatherMessage = {
     },
     "hero": {
       "type": "image",
-      "url": "https://www.cwb.gov.tw/V8/assets/img/weather_icons/weathers/png_icon/day/02.png"
+      "url": "https://www.cwa.gov.tw/V8/assets/img/weather_icons/weathers/png_icon/day/02.png"
     },
     "body": {
       "type": "box",
@@ -1122,7 +1122,7 @@ const getWxImgUrl = (index, startTime) => {
   const [, sHour] = startTime.split(" ")
   const DayOrNight = (sHour === "06:00:00" || sHour === "12:00:00") ? "day" : "night"
   const BaseURL = process.env.BASE_URL === undefined ?
-    "https://www.cwb.gov.tw/V8/assets/img/weather_icons/weathers/png_icon" :
+    "https://www.cwa.gov.tw/V8/assets/img/weather_icons/weathers/png_icon" :
     process.env.BASE_URL + "/images"
 
   return `${BaseURL}/${DayOrNight}/${index.toString().padStart(2, "0")}.png`
